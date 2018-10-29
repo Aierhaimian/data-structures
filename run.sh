@@ -1,12 +1,12 @@
 #!/bin/bash
 
-arg1=$1
-arg2=$2
-arg3=$3
+arg1=$1 #The source file
+arg2=$2 #The input data file
+arg3=$3 #The output data file
 
 fileName=${arg1##*/}
-fileType=${fileName#*.}
-filePath=${arg1%%/*}
+fileType=${fileName##*.}
+filePath=$(dirname ${arg1})
 
 outfilename=${fileName%%.*}".out"
 
