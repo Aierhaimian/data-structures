@@ -4,6 +4,86 @@
 
 using namespace std;
 
+int binarySearchLast(vector<int> &vec, int value, int low, int high)
+{
+    while(low <= high)
+    {
+        int mid = low + ((high-low)>>1);
+        if (vec[mid] == value)
+        {
+            if(mid == vec.size()-1 || vec[mid+1] != value)
+                return mid+1;
+            else
+                low = mid + 1;
+        }
+        else if (vec[mid] < value)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+
+    return -1;
+}
+
+int binarySearchLastSmall(vector<int> &vec, int value, int low, int high)
+{
+    while(low <= high)
+    {
+        int mid = low + ((high-low)>>1);
+        if (vec[mid] <= value)
+        {
+            if(mid == vec.size()-1 || vec[mid+1] > value)
+                return mid+1;
+            else
+                low = mid + 1;
+        }
+        else
+            low = mid + 1;
+    }
+
+    return -1;
+}
+
+int binarySearchFirst(vector<int> &vec, int value, int low, int high)
+{
+    while(low <= high)
+    {
+        int mid = low + ((high-low)>>1);
+        if (vec[mid] == value)
+        {
+            if(mid == 0 || vec[mid-1] != value)
+                return mid+1;
+            else
+                high = mid - 1;
+        }
+        else if (vec[mid] < value)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+
+    return -1;
+}
+
+int binarySearchFirstLarge(vector<int> &vec, int value, int low, int high)
+{
+    while(low <= high)
+    {
+        int mid = low + ((high-low)>>1);
+        if (vec[mid] >= value)
+        {
+            if(mid == 0 || vec[mid-1] < value)
+                return mid+1;
+            else
+                high = mid - 1;
+        }
+        else
+            low = mid + 1;
+    }
+
+    return -1;
+}
+
 int binarySearchInternal(vector<int> &vec, int value, int low, int high)
 {
     while(low <= high)
@@ -40,7 +120,11 @@ int binarySearch(vector<int> &vec, int value)
     int low = 0;
     int high = vec.size() - 1;
     //return binarySearchInternal(vec, value, low, high);
-    return binarySearchRecursive(vec, value, low, high);
+    //return binarySearchRecursive(vec, value, low, high);
+    //return binarySearchFirst(vec, value, low, high);
+    //return binarySearchLast(vec, value, low, high);
+    //return binarySearchFirstLarge(vec, value, low, high);
+    return binarySearchLastSmall(vec, value, low, high);
 }
 
 int main(int argc, char **argv)
