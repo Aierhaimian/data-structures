@@ -18,12 +18,19 @@ using namespace std;
 
 class Heap{
 private:
-    int *arrayHeap;
-    int heapSize;
+    int *arrayHeap; // 使用数组存储堆
+    int heapSize;   // 堆可以存储最大元素个数
+    int countSize;  // 堆中已经存储的元素个数
+
+    void swap(int *array, int i, int j);    // 交换数组中i，j元素的位置
+    void heapfiy(int *array, int n, int i); // 堆化
+    
 public:
     Heap(int size);
     void readArray(string filename);//读待排序数组文件
     void showArray();//打印数组
+    void insert(int item); // 插入元素
+    void removeMax(); // 删除堆顶元素
     void maxHeapLife(int i,int size);//调整最大堆
     void buildMaxHeap();//建立最大堆
     void heapSort();//堆排序算法
@@ -32,8 +39,16 @@ public:
 
 Heap::Heap(int size)
 {
-    heapSize = size;
-    arrayHeap = new int[heapSize];
+    arrayHeap = new int[size + 1];
+    heapSize  = size;
+    countSize = 0;
+}
+
+void Heap::swap(int *array, int i, int j)
+{
+    int tmp = array[i];
+    array[i] = array[j];
+    array[j] = tmp;
 }
 
 void Heap::readArray(string filename)
@@ -48,7 +63,7 @@ void Heap::readArray(string filename)
     istringstream istr(line);
     int tmp = 0;
     istr>>tmp;
-    heapSize = tmp;
+    countSize = tmp;
     for(int i=1;i<=tmp;i++)
         istr>>arrayHeap[i];
     ifs.close();
@@ -56,11 +71,53 @@ void Heap::readArray(string filename)
 
 void Heap::showArray()
 {
-    cout<<"数组规模："<<heapSize<<endl;
-    cout<<"数组元素："<<endl;
-    for(int i=1;i<=heapSize;i++)
+    cout<<"堆中存储元素个数："<<countSize<<endl;
+    cout<<"堆中存储的元素："<<endl;
+    for(int i=1;i<=countSize;i++)
         cout<<arrayHeap[i]<<" ";
     cout<<endl;
+}
+
+void Heap::insert(int item)
+{
+    if(countSize >= heapSize)
+        return; // 堆满返回
+    countSize++;
+    arrayHeap[countSize] = item;
+
+    int i = countSize;
+    while(i/2 > 0 && arrayHeap[i] > arrayHeap[i/2]) //从下往上
+    {
+        swap(arrayHeap, i, i/2);
+        i = i/2;
+    }
+}
+
+void Heap::heapfiy(int *array, int n, int i) //从上往下
+{
+    while(true)
+    {
+        int maxPos = i;
+        if(i*2 <= n && array[i*2] > array[i]) maxPos = i*2;
+        if(i*2+1 <=n && array[i*2+1] > array[maxPos]) maxPos = i*2+1;
+        if(maxPos == i) return;
+
+        swap(array, i, maxPos);
+
+        i = maxPos;
+    }
+}
+
+void Heap::removeMax()
+{
+    if(countSize <= 0)
+        return; // 堆空返回
+
+    arrayHeap[1] = arrayHeap[countSize];
+    countSize--;
+
+    heapfiy(arrayHeap, countSize, 1);
+
 }
 
 void Heap::maxHeapLife(int i,int size)
@@ -93,9 +150,10 @@ void Heap::maxHeapLife(int i,int size)
 
 void Heap::buildMaxHeap()
 {
-    for(int i=heapSize/2;i>=1;i--)
+    for(int i=countSize/2;i>=1;i--)
     {
-        maxHeapLife(i,heapSize);
+        //maxHeapLife(i,heapSize);
+        heapfiy(arrayHeap, countSize, i);
     }
 }
 
@@ -103,17 +161,19 @@ void Heap::heapSort()
 {
     int i;
 
-    buildMaxHeap();
+    buildMaxHeap(); // 建堆，时间复杂度：O(n)
 
-    for(i=heapSize;i>=2;i--)
+    for(i=countSize;i>=2;i--) // 排序，时间复杂度：O(nlogn)
     {
-        int tmp = 0;
-        tmp =  arrayHeap[1];
-        arrayHeap[1] = arrayHeap[i];
-        arrayHeap[i] = tmp;
 
-        maxHeapLife(1,i-1);
+        swap(arrayHeap, 1, i);
+        // int tmp = 0;
+        // tmp =  arrayHeap[1];
+        // arrayHeap[1] = arrayHeap[i];
+        // arrayHeap[i] = tmp;
 
+        // maxHeapLife(1,i-1);
+        heapfiy(arrayHeap, i-1, 1);
     }
 }
 
