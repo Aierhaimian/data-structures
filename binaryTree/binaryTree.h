@@ -72,9 +72,12 @@ class BinaryTree: public TreeNode<T>
         bool isFind(const T &theNode, TreeNode<T> * bt);
         BinaryTree *findMin(TreeNode<T> *bt) const;
         BinaryTree *findMax(TreeNode<T> *bt) const;
-        void preOrder(TreeNode<T> *bt) const;
-        void inOrder(TreeNode<T> *bt) const;
-        void postOrder(TreeNode<T> *bt) const;
+        void preOrderRecur(TreeNode<T> *bt) const;
+        void inOrderRecur(TreeNode<T> *bt) const;
+        void postOrderRecur(TreeNode<T> *bt) const;
+        void preOrderNonRecur(TreeNode<T> *bt) const;
+        void inOrderNonRecur(TreeNode<T> *bt) const;
+        void postOrderNonRecur(TreeNode<T> *bt) const;
 };
 
 

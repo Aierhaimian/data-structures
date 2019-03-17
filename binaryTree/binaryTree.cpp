@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 
 #include "binaryTree.h"
 
@@ -44,30 +45,36 @@ void BinaryTree<T>::remove(const T &theNode)
 template<class T>
 bool BinaryTree<T>::isFind(const T &theNode)
 {
-    isFind(theNode, root);
+    return isFind(theNode, root);
 }
 
 template<class T>
 void BinaryTree<T>::preOrder() const
 {
-    preOrder(root);
+    preOrderRecur(root);
+    std::cout << std::endl;
 
+    preOrderNonRecur(root);
     std::cout << std::endl;
 }
 
 template<class T>
 void BinaryTree<T>::inOrder() const
 {
-    inOrder(root);
+    inOrderRecur(root);
+    std::cout << std::endl;
 
+    inOrderNonRecur(root);
     std::cout << std::endl;
 }
 
 template<class T>
 void BinaryTree<T>::postOrder() const
 {
-    postOrder(root);
+    postOrderRecur(root);
+    std::cout << std::endl;
 
+    postOrderNonRecur(root);
     std::cout << std::endl;
 }
 
@@ -186,7 +193,7 @@ void BinaryTree<T>::remove(const T &theNode, TreeNode<T> *&bt)
         return;
 
     //要删除的节点有两个子节点
-    if(p->leftNode != nullptr && p->leftNode != nullptr) //需查找右子树最小的节点
+    if(p->leftNode != nullptr && p->rightNode != nullptr) //需查找右子树最小的节点
     {
         TreeNode<T> *minP = p->rightNode;
         TreeNode<T> *minPP = p; //minPP表示minP的父节点
@@ -247,38 +254,134 @@ BinaryTree<T> * BinaryTree<T>::findMin(TreeNode<T> *bt) const
 }
 
 template<class T>
-void BinaryTree<T>::preOrder(TreeNode<T> *bt) const
+void BinaryTree<T>::preOrderRecur(TreeNode<T> *bt) const
 {
     TreeNode<T> *p = bt;
     if (nullptr != p)
     {
         std::cout << p->data << " ";
-        preOrder(p->leftNode);
-        preOrder(p->rightNode);
+        preOrderRecur(p->leftNode);
+        preOrderRecur(p->rightNode);
+    }
+}
+
+// 根节点不空，打印，根节点入栈，并将左孩子设为当前节点
+// 左孩子即当前节点不为空，打印，用一个while实现
+// 若左孩子为空，跳出while循环
+// 
+// 若栈不空，则将栈顶设为当前节点，pop栈顶，将当前节点的右孩子为当前节点
+template<class T>
+void BinaryTree<T>::preOrderNonRecur(TreeNode<T> *bt) const
+{
+    TreeNode<T>* p = bt;
+    if (nullptr == p)
+        return;
+    std::stack<TreeNode<T>*> s;
+    TreeNode<T>* current = p;
+    while (nullptr != current || !s.empty() )
+    {
+        while (nullptr != current)
+        {
+            std::cout << current->data << " ";
+            s.push(current);
+            current = current->leftNode;
+        }
+
+        if (!s.empty())
+        {
+            current = s.top();
+            s.pop();
+            current = current->rightNode;
+        }
     }
 }
 
 template<class T>
-void BinaryTree<T>::inOrder(TreeNode<T> *bt) const
+void BinaryTree<T>::inOrderRecur(TreeNode<T> *bt) const
 {
     TreeNode<T> *p = bt;
     if (nullptr != p)
     {
-        inOrder(p->leftNode);
+        inOrderRecur(p->leftNode);
         std::cout << p->data << " ";
-        inOrder(p->rightNode);
+        inOrderRecur(p->rightNode);
+    }
+}
+
+// 类似前序遍历
+template<class T>
+void BinaryTree<T>::inOrderNonRecur(TreeNode<T>* bt) const
+{
+    TreeNode<T>* p = bt;
+    if (nullptr == p)
+        return;
+
+    std::stack<TreeNode<T>*> s;
+    TreeNode<T>* current = p;
+
+    while (nullptr != current || !s.empty())
+    {
+        while (nullptr != current)
+        {
+            s.push(current);
+            current = current->leftNode;
+        }
+
+        if (!s.empty())
+        {
+            current = s.top();
+            std::cout << current->data << " ";
+            s.pop();
+            current = current->rightNode;
+        }
     }
 }
 
 template<class T>
-void BinaryTree<T>::postOrder(TreeNode<T> *bt) const
+void BinaryTree<T>::postOrderRecur(TreeNode<T> *bt) const
 {
     TreeNode<T> *p = bt;
     if (nullptr != p)
     {
-        postOrder(p->leftNode);
-        postOrder(p->rightNode);
+        postOrderRecur(p->leftNode);
+        postOrderRecur(p->rightNode);
         std::cout<< p->data << " ";
     }
 }
 
+// 要保证先访问根节点的左孩子、右孩子之后才能访问根节点
+// 因此对于任一节点p，先将其入栈，若p不存在左孩子和右孩子
+// 或者左孩子或右孩子都已被访问，则同样可以直接访问该节点
+// 否则，将p的右孩子和左孩子依次入栈，这样就保证了每次取
+// 栈顶元素的时候按照左右根的顺序访问。
+template<class T>
+void BinaryTree<T>::postOrderNonRecur(TreeNode<T>* bt) const
+{
+    TreeNode<T>* p = bt;
+    if (nullptr == p)
+        return;
+
+    std::stack<TreeNode<T>*> s;
+    TreeNode<T>* cur;
+    TreeNode<T>* pre = nullptr;
+
+    s.push(p);
+    while (!s.empty())
+    {
+        cur = s.top();
+        if ((nullptr == cur->leftNode && nullptr == cur->rightNode) ||
+            (nullptr != pre && (pre == cur->leftNode || pre == cur->rightNode)))
+        {
+            std::cout << cur->data << " ";
+            s.pop();
+            pre = cur;
+        }
+        else
+        {
+            if (nullptr != cur->rightNode)
+                s.push(cur->rightNode);
+            if (nullptr != cur->leftNode)
+                s.push(cur->leftNode);
+        }
+    }
+}
