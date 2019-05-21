@@ -5,33 +5,66 @@
 
 using namespace std;
 
+class Exception {
+public:
+    Exception() {
+        msg = "Exception!";
+    }
+
+    virtual string Massage() {
+        return msg;
+    }
+protected:
+    string msg;
+};
+
+class StackEmptyException : public Exception {
+public:
+    StackEmptyException() {
+        msg = "The stack is empty!";
+    }
+};
+
+class StackFullException : public Exception {
+public:
+    StackFullException() {
+        msg = "The stack is full!";
+    }
+};
+
 //实现顺序栈模板
 template<class T>
-class stack
+class Stack
 {
 public:
     //构造函数
-    Stack(){int MaxStackSize = 100};
+    Stack(int MaxStackSize = 100);
     //析构函数
-    ~Stack(){Clear()};
-    //销毁栈
-    void Clear();
+    ~Stack() {
+        clear();
+    }
     //清空栈
-    void Empty();
+    void makeEmpty();
     //判断栈是否为空
-    bool isEmpty();
+    bool empty();
     //判断栈是否已满
-    bool isFull();
+    bool full();
     //入栈
-    bool Push(const T &item);
+    bool push(const T &item);
     //出栈
-    bool Pop();
+    bool pop();
     //返回栈顶元素
-    bool Top(T &item);
+    T& top();
+    // 返回栈的大小
+    size_t size();
 private:
     int topOfStack;
     int capacity;
     T *array;
+
+
+    //销毁栈
+    void clear();
 };
 
 template<class T>
@@ -42,56 +75,65 @@ Stack<T>::Stack(int MaxStackSize):capacity(MaxStackSize)
 }
 
 template<class T>
-bool Stack<T>::isEmpty()
+bool Stack<T>::empty()
 {
-    return topOfStack == -1;
+    if (topOfStack == -1)
+        return true;
+    return false;
 }
 
 template<class T>
-bool Stack<T>::isFull()
+bool Stack<T>::full()
 {
-    return topOfStack == capacity - 1;
+    if (topOfStack == capacity - 1)
+        return true;
+    return false;
 }
 
 template<class T>
-bool Stack<T>::Push(const T &item)
+bool Stack<T>::push(const T &item)
 {
-    if(isFull() == true)
-        return false;
+    if(full())
+        throw StackFullException();
     topOfStack ++;
     array[topOfStack] = item;
     return true;
 }
 
 template<class T>
-bool Stack<T>::Pop()
+bool Stack<T>::pop()
 {
-    if(isEmpty() == true)
-        return false;
+    if(empty())
+        throw StackEmptyException();
     topOfStack --;
     return true;
 }
 
 template<class T>
-bool Stack<T>::Top(T &item)
+T& Stack<T>::top()
 {
-    if(isEmpty() == true)
-        return false;
-    item = array[topOfStack];
-    return true;
+    if (empty())
+        throw StackEmptyException();
+    return array[topOfStack];
 }
 
 template<class T>
-void Stack<T>::Clear()
+void Stack<T>::clear()
 {
     topOfStack = -1;
     delete []array;
 }
 
 template<class T>
-void Stack<T>::Empty()
+void Stack<T>::makeEmpty()
 {
     topOfStack = -1;
+}
+
+template<class T>
+size_t Stack<T>::size()
+{
+    return topOfStack + 1;
 }
 
 #endif // STACK_H_INCLUDED
