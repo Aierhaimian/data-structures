@@ -12,9 +12,9 @@ class LinkNode
 {
     public:
         T data;
-        LinkNode<T> *next;
-        LinkNode(LinkNode<T> *ptr = NULL){next = ptr;}
-        LinkNode(const T &item, LinkNode<T> *ptr = NULL)
+        LinkNode<T>* next;
+        LinkNode(LinkNode<T>* ptr = NULL){next = ptr;}
+        LinkNode(const T& item, LinkNode<T>* ptr = NULL)
         {
             next = ptr;
             data = item;
@@ -44,32 +44,32 @@ class SingleLinkedList: public LinkNode<T>
 {
     public:
         //无参数的构造函数
-        SingleLinkedList(){head = new LinkNode<T>;}
+        SingleLinkedList() { head = new LinkNode<T>; }
         //带参数的构造函数
-        SingleLinkedList(const T &item){head = new LinkNode<T>(item);}
+        SingleLinkedList(const T& item) { head = new LinkNode<T>(item); }
         //拷贝构造函数
-        SingleLinkedList(SingleLinkedList<T> &List);
+        SingleLinkedList(const SingleLinkedList<T>& List);
         //析构函数
-        ~SingleLinkedList(){Clear();}
+        ~SingleLinkedList() { Clear(); }
         //重载函数：赋值
-        SingleLinkedList<T>& operator=(SingleLinkedList<T> &List);
+        SingleLinkedList<T>& operator=(const SingleLinkedList<T>& List);
         //链表清空
         void Clear();
         //获取链表长度
         int Length() const;
         //获取链表头结点
-        LinkNode<T> * GetHead() const;
+        LinkNode<T>* GetHead() const;
         //设置链表头结点
-        void SetHead(LinkNode<T> *p);
+        void SetHead(LinkNode<T>* p);
         //查找给定数据的前一个位置，返回第一个找到的满足条件的结点指针
-        LinkNode<T> * FindPrevious(T &item);
+        LinkNode<T>* FindPrevious(T &item);
         //查找数据的位置，返回第一个找到的满足条件的结点指针
-        LinkNode<T> * Find(T &item);
+        LinkNode<T>* Find(T &item);
         //head头结点的下一个位置pos = 1，即链表的第一个结点
         /*查找给定位置结点的前一个结点，并返回该结点*/
-        LinkNode<T> * LocatePrevious(int pos);
+        LinkNode<T>* LocatePrevious(int pos);
         //定位指定的位置，返回该位置上的结点指针
-        LinkNode<T> * Locate(int pos);
+        LinkNode<T>* Locate(int pos);
         //在指定的位置pos后插入值为item的结点，失败返回false
         bool InsertAfterPos(T &item, int pos);
         //在指定的位置pos前插入值为item的结点，失败返回false
@@ -91,7 +91,7 @@ class SingleLinkedList: public LinkNode<T>
         //链表逆序
         void Reverse();
     private:
-        LinkNode<T> *head;
+        LinkNode<T>* head;
 };
 
 /*判断链表是否为空*/
@@ -105,7 +105,7 @@ bool SingleLinkedList<T>::isEmpty() const
 template<class T>
 bool SingleLinkedList<T>::isLast(int pos)
 {
-   LinkNode<T> *p = head;
+   LinkNode<T>* p = head;
    int cnt = 0;
    while(p->next != NULL && cnt < pos)
    {
@@ -124,7 +124,7 @@ template<class T>
 int SingleLinkedList<T>::Length() const
 {
     int len = 0;
-    LinkNode<T> *p = head;
+    LinkNode<T>* p = head;
     while(p->next != NULL)
     {
         len++;
@@ -137,7 +137,7 @@ int SingleLinkedList<T>::Length() const
 template<class T>
 void SingleLinkedList<T>::Clear()
 {
-    LinkNode<T> *p = NULL;
+    LinkNode<T>* p = NULL;
     while(head->next != NULL)
     {
         p = head->next;
@@ -150,23 +150,23 @@ void SingleLinkedList<T>::Clear()
 template<class T>
 LinkNode<T>* SingleLinkedList<T>::GetHead() const
 {
-    LinkNode<T> *p = head;
+    LinkNode<T>* p = head;
 
     return p;
 }
 
 /*设置链表头结点*/
 template<class T>
-void SingleLinkedList<T>::SetHead(LinkNode<T> *p)
+void SingleLinkedList<T>::SetHead(LinkNode<T>* p)
 {
     head = p;
 }
 
 //查找给定数据的前一个位置，返回第一个找到的满足条件的结点指针
 template<class T>
-LinkNode<T>* SingleLinkedList<T>::FindPrevious(T &item)
+LinkNode<T>* SingleLinkedList<T>::FindPrevious(T& item)
 {
-    LinkNode<T> *p = head;
+    LinkNode<T>* p = head;
     while(p->next != NULL && p->next->data != item)
     {
         p = p->next;
@@ -179,7 +179,7 @@ LinkNode<T>* SingleLinkedList<T>::FindPrevious(T &item)
 template<class T>
 LinkNode<T>* SingleLinkedList<T>::Find(T &item)
 {
-    LinkNode<T> *p = head->next;
+    LinkNode<T>* p = head->next;
     while(p != NULL && p->data != item)
     {
         p = p->next;
@@ -191,8 +191,8 @@ LinkNode<T>* SingleLinkedList<T>::Find(T &item)
 template<class T>
 LinkNode<T>* SingleLinkedList<T>::LocatePrevious(int pos)
 {
-    LinkNode<T> *p = head;
-    LinkNode<T> *prev = new LinkNode<T>();
+    LinkNode<T>* p = head;
+    LinkNode<T>* prev = new LinkNode<T>();
     int cnt = 0;
     while(p->next != NULL && cnt < pos)
     {
@@ -215,7 +215,7 @@ LinkNode<T>* SingleLinkedList<T>::Locate(int pos)
         return NULL;
     
     int cnt = 0;
-    LinkNode<T> *p = head;//这里让p为head方便后续插入删除，否则会有小bug
+    LinkNode<T>* p = head;//这里让p为head方便后续插入删除，否则会有小bug
     while(p != NULL && cnt < pos)
     {
         cnt++;
@@ -231,11 +231,11 @@ bool SingleLinkedList<T>::InsertAfterPos(T &item, int pos)
 {
     if(pos == 0)
     {
-        LinkNode<T> *p = head;
+        LinkNode<T>* p = head;
         while(p->next != NULL)
             p = p->next;
 
-        LinkNode<T> *node = new LinkNode<T>(item);
+        LinkNode<T>* node = new LinkNode<T>(item);
         if(node == NULL)
             return false;
 
@@ -244,13 +244,14 @@ bool SingleLinkedList<T>::InsertAfterPos(T &item, int pos)
         return true;
     }
 
-    LinkNode<T> *p = Locate(pos);
+    LinkNode<T>* p = Locate(pos);
     if(p == NULL)
         return false;
 
     LinkNode<T> *node = new LinkNode<T>(item);
     if(node == NULL)
         return false;
+
     node->next = p->next;
     p->next = node;
 
@@ -264,9 +265,9 @@ bool SingleLinkedList<T>::InsertPrevPos(T &item, int pos)
 {
     if(pos == 0)
     {
-        LinkNode<T> *p = head;
+        LinkNode<T>* p = head;
 
-        LinkNode<T> *node = new LinkNode<T>(item);
+        LinkNode<T>* node = new LinkNode<T>(item);
         if(node == NULL)
             return false;
 
@@ -276,11 +277,11 @@ bool SingleLinkedList<T>::InsertPrevPos(T &item, int pos)
         return true;
     }
 
-    LinkNode<T> *p = LocatePrevious(pos);
+    LinkNode<T>* p = LocatePrevious(pos);
     if(p == NULL)
         return false;
 
-    LinkNode<T> *node = new LinkNode<T>(item);
+    LinkNode<T>* node = new LinkNode<T>(item);
     if(node == NULL)
         return false;
     
@@ -292,11 +293,11 @@ bool SingleLinkedList<T>::InsertPrevPos(T &item, int pos)
 template<class T>
 bool SingleLinkedList<T>::Delete(int pos, T &item)
 {
-    LinkNode<T> *p = LocatePrevious(pos);
+    LinkNode<T>* p = LocatePrevious(pos);
     if(p == NULL || p->next == NULL)
         return false;
 
-    LinkNode<T> *del = p->next;
+    LinkNode<T>* del = p->next;
     item = del->data;
     p->next = del->next;
     delete del;
@@ -308,7 +309,7 @@ bool SingleLinkedList<T>::Delete(int pos, T &item)
 template<class T>
 bool SingleLinkedList<T>::GetData(int pos, T &item)
 {
-    LinkNode<T> *p = Locate(pos);
+    LinkNode<T>* p = Locate(pos);
     if(p == NULL || p->next == NULL)
         return false;
     
@@ -321,7 +322,7 @@ bool SingleLinkedList<T>::GetData(int pos, T &item)
 template<class T>
 bool SingleLinkedList<T>::SetData(int pos, T &item)
 {
-    LinkNode<T> *p = Locate(pos);
+    LinkNode<T>* p = Locate(pos);
     if(p == NULL || p->next == NULL)
         return false;
 
@@ -334,7 +335,7 @@ bool SingleLinkedList<T>::SetData(int pos, T &item)
 template<class T>
 void SingleLinkedList<T>::PrintList() const
 {
-    LinkNode<T> *p = head->next;
+    LinkNode<T>* p = head->next;
     while(p != NULL)
     {
         cout << p->data << " ";
@@ -387,12 +388,12 @@ void SingleLinkedList<T>::SortList(bool flag)
 template<class T>
 void SingleLinkedList<T>::Reverse()
 {
-    LinkNode<T> *prev = NULL;
-    LinkNode<T> *curr = head->next;
+    LinkNode<T>* prev = NULL;
+    LinkNode<T>* curr = head->next;
 
     while(curr)
     {
-        LinkNode<T> *next = curr->next;
+        LinkNode<T>* next = curr->next;
         curr->next = prev;
         prev = curr;
         curr = next;
